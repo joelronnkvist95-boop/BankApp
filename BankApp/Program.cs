@@ -87,13 +87,12 @@
         static void MainMenu(int loggedInUser)
         {
 
-            Console.Clear();
 
             bool running = true;
 
             while (running)
             {
-                
+                Console.Clear();
                 Console.WriteLine("Välj menyval:");
                 Console.WriteLine();
                 Console.WriteLine("1. Se dina konton och saldo");
@@ -144,7 +143,7 @@
         static void ViewAccounts(int loggedInUser)
         {
             Console.Clear();
-            Console.WriteLine("Konton:");
+            Console.WriteLine("Kontosaldon:");
             Console.WriteLine();
 
             for (int i = 0; i < 3; i++)
@@ -161,6 +160,15 @@
         }
         static void Transfer(int loggedInUser)
         {
+            Console.Clear();
+
+            bool pincodeCheck = CheckPincode(loggedInUser);
+
+            if (!pincodeCheck)
+            {
+                return;
+            }
+
             Console.Clear();
             Console.WriteLine("Menyval 2: ");
             Console.WriteLine("Vilka konton vill du överföra mellan?");
@@ -217,8 +225,15 @@
         static void Withdraw(int loggedInUser)
         {
             Console.Clear();
-            
-            
+
+            bool pincodeCheck = CheckPincode(loggedInUser);
+
+            if (!pincodeCheck)
+            {
+                return;
+            }
+
+            Console.Clear();
             Console.WriteLine("Menyval 3: ");
             
             Console.WriteLine("\n");
@@ -277,7 +292,9 @@
 
                     if (pincodeCounter == 3)
                     {
-                        Console.WriteLine("För många felaktiga försök. Försök igen senare");
+                        Console.Clear();
+                        Console.WriteLine("För många felaktiga försök! Försök igen senare");
+                        Console.WriteLine();
                         Console.WriteLine("Tryck ENTER för att fortsätta");
                         Console.ReadKey();
                         return false;
@@ -285,6 +302,7 @@
                 }
                 else
                 {
+                    Console.Clear();
                     return true;
                 }
             }
