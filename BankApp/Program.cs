@@ -4,8 +4,8 @@
     {
 
         static string[] usernames = { "Kenta", "Johnny", "Glenn", "Leif", "Bosse" };
-        static string[] passwords = { "abc123", "bcd234", "cde345", "def456", "efg567" };
-
+        
+        static string[] pincodes = { "1234", "2345", "3456", "4567", "5678" };
         static string[,] userAccounts =
         {
             {"allkonto", "sparkonto", ""},
@@ -30,14 +30,17 @@
             Console.WriteLine("Välkommen till banken");
             Console.WriteLine();
 
-            int loggedInUser = TryLogin();
-
-            if(loggedInUser != -1)
+            while (true)
             {
-                MainMenu(loggedInUser);
+                Console.Clear();
+                
+                int loggedInUser = TryLogin();
+
+                if (loggedInUser != -1)
+                {
+                    MainMenu(loggedInUser);
+                }
             }
-
-
 
         }
         
@@ -51,12 +54,12 @@
                 string inputUsername = Console.ReadLine();
 
                 Console.Write("Ange lösenord: ");
-                string inputPassword = Console.ReadLine();
+                string inputPincode = Console.ReadLine();
 
                 for (int i = 0;  i < usernames.Length; i++)
                 {
                    
-                    if (inputUsername == usernames[i] && inputPassword == passwords[i])
+                    if (inputUsername == usernames[i] && inputPincode == pincodes[i])
                     {
                         Console.Clear();
                         Console.WriteLine("Du är nu inloggad");
@@ -162,8 +165,8 @@
             Console.WriteLine("Menyval 2: ");
             Console.WriteLine("Vilka konton vill du överföra mellan?");
             Console.WriteLine("\n");
-            
-            for(int i = 0; i < 3; i++)
+
+            for (int i = 0; i < 3; i++)
             {
                 if (userAccounts[loggedInUser, i] != "")
                 {
@@ -181,7 +184,7 @@
             int destinationAccount = int.Parse(Console.ReadLine()) - 1;
             Console.WriteLine();
 
-            
+
             Console.WriteLine("Välj belopp att överföra: ");
             decimal amount = decimal.Parse(Console.ReadLine());
 
@@ -207,13 +210,15 @@
             Console.WriteLine("Tryck på valfri tangent för att återgå till huvudmenyn...");
 
             Console.ReadKey();
-            
+
             Console.Clear();
         }
-
+            
         static void Withdraw(int loggedInUser)
         {
             Console.Clear();
+            
+            
             Console.WriteLine("Menyval 3: ");
             
             Console.WriteLine("\n");
@@ -252,9 +257,49 @@
                 Console.WriteLine("Beloppet överstiger ditt kontosaldo");
             }
         }
-        
+        static bool CheckPincode(int loggedInUser)
+        {
+
+            int pincodeCounter = 0;
+
+            while (true)
+            {
+                Console.Write("Ange pinkod: ");
+                string pincodeInput = Console.ReadLine();
+
+                if (pincodeInput != pincodes[loggedInUser])
+                {
+                    pincodeCounter++;
+
+                    int attemptsLeft = 3 - pincodeCounter;
+
+                    Console.WriteLine($"Fel pinkod (Antal försök kvar: {attemptsLeft})");
+
+                    if (pincodeCounter == 3)
+                    {
+                        Console.WriteLine("För många felaktiga försök. Försök igen senare");
+                        Console.WriteLine("Tryck ENTER för att fortsätta");
+                        Console.ReadKey();
+                        return false;
+                    }
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
     }
 }
+            
+            
+
+
+            
+
+            
+        
+
                 
                 
                 
