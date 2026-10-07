@@ -65,20 +65,14 @@
         // Inloggningsmetod som testar om inloggningsuppgfiterna stämmer och vilken användare som loggar in. Detta genom att returnera tillbaka arrayindexen för den användaren.
         static int TryLogin()
         {
-            // Räknare som håller koll på hur många felförsök användaren gjort.
-            int logInAttempts = 0;
-
+ 
             while (true)
             {
-
                 Console.WriteLine("Logga in");
                 Console.WriteLine();
                 Console.Write("Ange användarnamn: ");
+                
                 string inputUsername = Console.ReadLine();
-
-                Console.Write("Ange pinkod: ");
-                string inputPincode = Console.ReadLine();
-
 
                 // For-loopen startar på i = 0 och loopas så länge i är mindre än längden på usernames[] som är 5.
                 // Eftersom värdet för i ökar med 1 för varje varv kan i användas direkt som index för arrayen i if-satsen, där användarinput jämförs med arrayen och dess index.
@@ -86,42 +80,33 @@
                 for (int i = 0; i < usernames.Length; i++)
                 {
                     // Nu kan värdet för i stoppas in som index[i] så att varje index i arrayerna kan jämföras med användarinputen.
-                    if (inputUsername == usernames[i] && inputPincode == pincodes[i])
+                    if (inputUsername == usernames[i])
                     {
                         Console.Clear();
-                        Console.WriteLine("Du är nu inloggad");
+                        Console.WriteLine("Rätt användarnamn");
                         Console.WriteLine();
-                        Console.WriteLine("Tryck ENTER för att fortsätta...");
-                        Console.ReadKey();
-                        return i;
+                        
+                        bool pincodeCheck = CheckPincode(i);
+
+
+                        if (!pincodeCheck)
+                        {
+                            return -1;
+                        }
+                        else
+                        {
+                            return i;
+                        }
+
                     }
 
                 }
-
-                //Var inloggningsuppgifterna inkorrekta så ökar logInAttempts++; värdet för logInAttempts med 1.
-                logInAttempts++;
-
-
-
-                // Om variabeln logInAttepts når värdet 3, så avslutar denna if-satsen metoden direkt
-                if (logInAttempts >= 3)
-                {
-                    Console.Clear();
-                    Console.WriteLine("Du angav fel inloggningsuppgifter 3 gånger. Programmet avslutas.");
-                    Console.WriteLine();
-                    Console.WriteLine("Tryck på ENTER för att fortsätta...");
-                    Console.ReadKey();
-                    return -1;
-                }
-                else
-                {
-                    Console.Clear();
-                    // Här sparas hur många inloggnignsförsök som användaren har kvar och skriver ut det i konsolen.
-                    int attemptsLeft = 3 - logInAttempts;
-                    Console.WriteLine($"Du angav fel inloggningsuppgifter. Försök igen (Försök kvar: {attemptsLeft})");
-                    Console.WriteLine();
-                }
-
+                Console.WriteLine();
+                Console.WriteLine("Fel användarnamn. Försök igen");
+                Console.WriteLine();
+                Console.WriteLine("Tryck ENTER för att fortsätta");
+                Console.ReadKey();
+                Console.Clear();
             }
 
         }
@@ -152,7 +137,9 @@
                         {
                             Console.Clear();
                             Console.WriteLine("Kontosaldon:");
+                            
                             ViewAccounts(loggedInUser);
+                            
                             Console.WriteLine("Tryck på ENTER för att återgå till huvudmenyn...");
                             Console.ReadKey();
                             Console.Clear();
@@ -166,6 +153,7 @@
                     case "3":
                         {
                             bool success = Withdraw(loggedInUser);
+                            
                             if (!success)
                             {
                                 return false;
@@ -214,35 +202,62 @@
         }
         static void Transfer(int loggedInUser)
         {
-            Console.Clear();
+            
 
             Console.Clear();
             Console.WriteLine("Menyval 2: ");
             Console.WriteLine("Vilka konton vill du överföra mellan?");
             Console.WriteLine("\n");
 
-            // For loopen snurrar 3 gånger för att inte missa något konto i arrayen. 
-            for (int i = 0; i < 3; i++)
+            int fromAccount = 0;
+            int destinationAccount = 0;
+
+            while (true)
             {
-                // Om inte kontot är tomt "" skrivs kontona och saldona ut i konsolen och numreras med i+1.
-                if (userAccounts[loggedInUser, i] != "")
+                ViewAccounts(loggedInUser);
+
+                Console.WriteLine();
+                Console.Write("Ange numret på kontot du vill överföra från:  ");
+
+                // Numret på kontot sparas från användarens input i variabeln fromAccount och det värdet subtraheras med 1 för att matcha indexet för kontot. 
+                fromAccount = int.Parse(Console.ReadLine()) - 1;
+
+                if(fromAccount < 0 || fromAccount > 2 || userAccounts[loggedInUser, fromAccount] == "")
                 {
-                    Console.WriteLine($"{i + 1}: {userAccounts[loggedInUser, i]}| Saldo: {userBalances[loggedInUser, i]}:-");
+                    Console.WriteLine("Ogiltigt konto. Försök igen");
+                    Console.ReadKey();
+                    continue;
                 }
+                else
+                {
+                    Console.Write("Ange numret på kontot du vill överföra till: ");
+
+                    // Samma gäller här.
+                    destinationAccount = int.Parse(Console.ReadLine()) - 1;
+                    Console.WriteLine();
+
+                    if(destinationAccount < 0 || destinationAccount > 2 || userAccounts[loggedInUser, destinationAccount] == "")
+                    {
+                        Console.WriteLine("Ogiltigt konto. Försök igen");
+                        Console.ReadKey();
+                        continue;
+                    }
+                    else if(fromAccount == destinationAccount)
+                    {
+                        Console.WriteLine("Du kan inte överföra till samma konto. Försök igen");
+                        Console.ReadKey();
+                        continue;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+             
             }
+           
 
-            Console.WriteLine();
-            Console.Write("Ange numret på kontot du vill överföra från:  ");
-
-            // Numret på kontot sparas från användarens input i variabeln fromAccount och det värdet subtraheras med 1 för att matcha indexet för kontot. 
-            int fromAccount = int.Parse(Console.ReadLine()) - 1;
-
-
-            Console.Write("Ange numret på kontot du vill överföra till: ");
-
-            // Samma gäller här.
-            int destinationAccount = int.Parse(Console.ReadLine()) - 1;
-            Console.WriteLine();
 
             // Här sparas beloppet som användaren vill överföra.
             Console.Write("Välj belopp att överföra: ");
@@ -280,7 +295,9 @@
             // ViewAccounts() anropas efter överföringen för att visa de nya saldona.
             Console.WriteLine("Nytt saldo:");
             Console.WriteLine();
+            
             ViewAccounts(loggedInUser);
+            
             Console.WriteLine();
             Console.WriteLine("Tryck på ENTER för att återgå till huvudmenyn");
 
@@ -293,25 +310,34 @@
         {
             Console.Clear();
 
-            Console.Clear();
+           
             Console.WriteLine("Menyval 3: ");
 
-            // For loopen snurrar 3 gånger för att inte missa något konto i arrayen. 
-            for (int i = 0; i < 3; i++)
-            {
-                // Om inte kontot är tomt "" skrivs kontona och saldona ut i konsolen och numreras med i+1.
-                if (userAccounts[loggedInUser, i] != "")
-                {
-                    Console.WriteLine($"{i + 1}: {userAccounts[loggedInUser, i]}| Saldo: {userBalances[loggedInUser, i]}:-");
+            int withdrawAccount = 0;
 
+            while (true)
+            {
+                // For loopen snurrar 3 gånger för att inte missa något konto i arrayen. 
+                ViewAccounts(loggedInUser);
+
+                Console.WriteLine();
+                Console.Write("Vilket konto vill du ta ut från?: ");
+
+                // Numret på kontot sparas från användarens input i variabeln withdrawAccount och det värdet subtraheras med 1 för att matcha indexet för kontot. 
+                withdrawAccount = int.Parse(Console.ReadLine()) - 1;
+
+                if(withdrawAccount < 0 || withdrawAccount > 2 || userAccounts[loggedInUser, withdrawAccount] == "")
+                {
+                    Console.WriteLine("Ogiltigt konto. Försök igen");
+                    Console.ReadKey();
+                    continue;
+                }
+                else
+                {
+                    break;
                 }
             }
-
-            Console.WriteLine();
-            Console.Write("Vilket konto vill du ta ut från?: ");
-
-            // Numret på kontot sparas från användarens input i variabeln withdrawAccount och det värdet subtraheras med 1 för att matcha indexet för kontot. 
-            int withdrawAccount = int.Parse(Console.ReadLine()) - 1;
+           
 
             while (true)
             {
@@ -351,10 +377,13 @@
 
                     // Här dras det valda beloppet bort från uttagsskontots saldo via saldorrayens index subtraherat med amount.
                     userBalances[loggedInUser, withdrawAccount] -= amount;
+                    
                     Console.Clear();
                     Console.WriteLine("Nytt saldo:");
                     Console.WriteLine();
+                    
                     ViewAccounts(loggedInUser);
+                    
                     Console.WriteLine("Tryck på ENTER för att återgå till huvudmenyn");
                     Console.ReadKey();
                     return true;
@@ -403,7 +432,7 @@
                         Console.Clear();
                         Console.WriteLine("För många felaktiga försök! Försök igen senare");
                         Console.WriteLine();
-                        Console.WriteLine("Tryck ENTER för att fortsätta");
+                        Console.WriteLine("Tryck ENTER för att avsluta programmet");
                         Console.ReadKey();
                         return false;
                     }
@@ -418,6 +447,12 @@
         }
     }
 }
+
+
+
+
+
+
 
 
 
