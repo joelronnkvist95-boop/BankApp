@@ -152,12 +152,14 @@
                         }
                     case "3":
                         {
+                            // Tar emot returvärdet från Withdraw() och sparar variabeln success.
                             bool success = Withdraw(loggedInUser);
                             
                             if (!success)
                             {
                                 return false;
                             }
+                            // Returnerat true; leder här till att break; körs vilket tar användare tillbaka till menyn igen även ifall det betyder att success blev true.
                             break;
 
 
@@ -222,7 +224,8 @@
                 // Numret på kontot sparas från användarens input i variabeln fromAccount och det värdet subtraheras med 1 för att matcha indexet för kontot. 
                 fromAccount = int.Parse(Console.ReadLine()) - 1;
 
-                if(fromAccount < 0 || fromAccount > 2 || userAccounts[loggedInUser, fromAccount] == "")
+                // Kontroll om kontot ej existerar.
+                if (fromAccount < 0 || fromAccount > 2 || userAccounts[loggedInUser, fromAccount] == "")
                 {
                     Console.WriteLine("Ogiltigt konto. Försök igen");
                     Console.ReadKey();
@@ -236,16 +239,54 @@
                     destinationAccount = int.Parse(Console.ReadLine()) - 1;
                     Console.WriteLine();
 
+                    // Kontroll om kontot ej existerar.
                     if(destinationAccount < 0 || destinationAccount > 2 || userAccounts[loggedInUser, destinationAccount] == "")
                     {
                         Console.WriteLine("Ogiltigt konto. Försök igen");
+                        Console.WriteLine();
+                        Console.WriteLine("tryck ENTER för att försöka igen, eller skriv (9) för att återgå till huvudmenyn ");
+
+                        string choice = Console.ReadLine();
+
+                        // möjligheten att avsluta
+                        if (choice == "9")
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine("Tryck ENTER för att återgå till huvudmenyn");
+                            Console.ReadKey();
+                            return;
+                        }
+                        else if (choice == "")
+                        {
+                            continue;
+                        }
+                        
                         Console.ReadKey();
                         continue;
+                    
                     }
                     else if(fromAccount == destinationAccount)
                     {
                         Console.WriteLine("Du kan inte överföra till samma konto. Försök igen");
+                        Console.WriteLine();
+                        Console.WriteLine("tryck ENTER för att försöka igen, eller skriv (9) för att återgå till huvudmenyn ");
+
+                        string choice = Console.ReadLine();
+
+                        // möjligheten att avsluta
+                        if (choice == "9")
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine("Tryck ENTER för att återgå till huvudmenyn");
+                            Console.ReadKey();
+                            return;
+                        }
+                        else if (choice == "")
+                        {
+                            continue;
+                        }
                         Console.ReadKey();
+                        
                         continue;
                     }
                     else
@@ -326,10 +367,36 @@
                 // Numret på kontot sparas från användarens input i variabeln withdrawAccount och det värdet subtraheras med 1 för att matcha indexet för kontot. 
                 withdrawAccount = int.Parse(Console.ReadLine()) - 1;
 
-                if(withdrawAccount < 0 || withdrawAccount > 2 || userAccounts[loggedInUser, withdrawAccount] == "")
+
+
+
+                // Kontroll om kontot ej existerar.
+                if (withdrawAccount < 0 || withdrawAccount > 2 || userAccounts[loggedInUser, withdrawAccount] == "")
                 {
+                   
+                    
                     Console.WriteLine("Ogiltigt konto. Försök igen");
                     Console.ReadKey();
+                    
+                    Console.WriteLine();
+                    Console.WriteLine("tryck ENTER för att försöka igen, eller skriv (9) för att återgå till huvudmenyn ");
+
+                    string choice = Console.ReadLine();
+
+                    // möjligheten att avsluta
+                    if (choice == "9")
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Tryck ENTER för att återgå till huvudmenyn");
+                        Console.ReadKey();
+                        return true;
+                    }
+                    else if (choice == "")
+                    {
+                        continue;
+                    }
+                    Console.ReadKey();
+                    
                     continue;
                 }
                 else
@@ -337,8 +404,18 @@
                     break;
                 }
             }
-           
 
+            // Kontroll för om saldot på kontot är 0.
+            if (userBalances[loggedInUser, withdrawAccount] == 0)
+            {
+                Console.Clear();
+
+                Console.WriteLine("Du har inga pengar på det kontot!");
+                Console.WriteLine();
+                Console.WriteLine("Tryck Enter för att återgå till huvudmenyn");
+                Console.ReadKey();
+                return true;
+            }
             while (true)
             {
 

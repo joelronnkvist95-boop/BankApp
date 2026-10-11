@@ -84,6 +84,16 @@ Vid körning av programmet finns dem 5 användaruppgifterna sparade i arrayerna 
 
 
 
+8\.  Konto och saldo arrayerna skulle även kunna göras till listor eftersom dem kan växa och krympa och därmed låta användarna kunna lägga till konton efter behov.
+
+
+
+9\. När jag gjorde en sista kontroll insåg jag att vissa användare kunde fastna i en loop dem inte kunde ta sig ur. Om glenn valde det kontot som han inte hade pengar på så fortsatte programmet att fråga efter en summa att ta ut men eftersom inga pengar fanns kunde han inte ta sig ur loopen. Därför beslutade jag mig för att lägga till en extra kontroll efter kontokontrollen som lät användaren att avsluta till huvudmenyn om kontot var utan pengar.
+
+10. Jag la även till möjligheten att kunna avsluta Transfer() om det inte fanns ett annat destinationskonto att överföra till eller att ett konto valdes som inte existerade vid val av destinationskonto i Transfer(). Möjligheten las även till i Withdraw() om kontot inte fanns.
+
+
+
 ### 3\. Resonemang för val av programstruktur
 
 
